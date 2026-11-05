@@ -1,0 +1,25 @@
+{
+  "name": "professional-backend-setup",
+  "version": "1.0.0",
+  "description": "A backend chai awr code series",
+  "keywords": [
+    "javascript",
+    "Backend",
+    "Chai"
+  ],
+  "homepage": "https://github.com/SALMAN-DEVELOPER-747757/Professional-Backend-#readme",
+  "bugs": {
+    "url": "https://github.com/SALMAN-DEVELOPER-747757/Professional-Backend-/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SALMAN-DEVELOPER-747757/Professional-Backend-.git"
+  },
+  "license": "ISC",
+  "author": "Berlin Sk",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
