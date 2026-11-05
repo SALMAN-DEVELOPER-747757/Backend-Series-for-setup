@@ -2,7 +2,7 @@
   "name": "professional-backend-setup",
   "version": "1.0.0",
   "description": "A backend chai awr code series",
-  "type": "commonjs",
+  "type": "module",
   "keywords": [
     "javascript",
     "Backend",
