@@ -1,110 +1,90 @@
-
 import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import bcrypt from "bcrypt"
 
-const userSchema = new Schema(
+const userSchema=new Schema(
     {
-        username: {
-            type: String,
-            required: true,
-            unique: true,
-            lowercase: true,
-            trim: true,
-            index: true
+        username:{
+            type:String,
+            required:true,
+            unique:true,
+            lowercase:true,
+            trim:true,
+            index:true
         },
-
-        email: {
-            type: String,
-            required: true,
-            unique: true,
-            lowercase: true,
-            trim: true
+         email:{
+            type:String,
+            required:true,
+            unique:true,
+            lowercase:true,
+            trim:true,
         },
-
-        fullName: {
-            type: String,
-            required: true,
-            lowercase: true,
-            trim: true
+         fullName:{
+            type:String,
+            required:true,
+            unique:true,
+            lowercase:true,
         },
-
-        avatar: {
-            type: String,
-            required: true // Cloudinary URL
+         avatar:{
+            type:String,  ///cloud URL
+            required:true,
         },
+        coverImage:{
+            type:String, //cloudinary url
 
-        coverImage: {
-            type: String // Cloudinary URL
         },
-
-        watchHistory: [
+        watchHistory:[
             {
-                type: Schema.Types.ObjectId,
-                ref: "video"
+                type:Schema.Types.ObjectId,
+                ref:"video"
             }
         ],
-
-        password: {
-            type: String,
-            required: [true, "Password is required"]
+        password:{
+            type:String,
+            required:[true,"Password is required"]
         },
-
-        refreshToken: {
-            type: String
+        refreshToken:{
+            type:String
         }
-
-    },
-    {
-        timestamps: true
-    }
-);
+    },{timestamps:true}
+)
 
 
-// Password Hashing Middleware
-userSchema.pre("save", async function () {
-    if (!this.isModified("password")) return;
+userSchema.pre("save",async function(next){
+    if(!this.isModified("password")) return next();
+    this.password=await bcrypt.hash(this.password,10);
+    next()
 
-    this.password = await bcrypt.hash(this.password, 10);
-});
-
-
-// Check Password
-userSchema.methods.isPasswordCorrect = async function (password) {
-    return await bcrypt.compare(password, this.password);
-};
+})
+userSchema.methods.isPasswordCorrect= async function(password){
+  return await bcrypt.compare(password,this.password)
+}
 
 
-// Generate Access Token
-userSchema.methods.generateAccessToken = function () {
+userSchema.methods.generateAccessToken= function(){
     return jwt.sign(
         {
-            _id: this._id,
-            email: this.email,
-            username: this.username,
-            fullName: this.fullName
+        _id:this._id,
+        email:this.email,
+        username:this.username,
+        fullName:this.fullName
         },
-        process.env.Access_Token_Secret,
+            process.env.Access_Token_Secret,
+            {
+                expiresIn:process.env.Access_Token_Expiry
+            }
+    )
+}
+userSchema.methods.generateRefreshToken=function(){
+     return jwt.sign(
         {
-            expiresIn: process.env.Access_Token_Expiry
-        }
-    );
-};
-
-
-// Generate Refresh Token
-userSchema.methods.generateRefreshToken = function () {
-    return jwt.sign(
-        {
-            _id: this._id
+        _id:this._id,
         },
-        process.env.Refresh_Token_Secret,
-        {
-            expiresIn: process.env.Refresh_Token_Expiry
-        }
-    );
-};
+            process.env.Refresh_Token_Secret,
+            {
+                expiresIn:process.env.Refresh_Token_Expiry
+            }
+    )
+}
 
-
-// Export User Model
-export const User = mongoose.model("User", userSchema);
+export const User=mongoose.model("User",userSchema)
